@@ -1,0 +1,86 @@
+<UserControl x:Class="Golem.Tablet.Views.LogsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Style="{StaticResource Card}" Padding="14,12">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Clear" Command="{Binding ClearCommand}" />
+                    <Button Content="Export…" Command="{Binding ExportCommand}"
+                            Style="{StaticResource AccentButton}" Margin="8,0,0,0" />
+                    <Border Style="{StaticResource Chip}" Margin="14,0,0,0" Padding="10,3">
+                        <TextBlock FontSize="10.5" Foreground="{StaticResource MutedBrush}">
+                            <Run Text="{Binding EntryCount, Mode=OneWay}" />
+                            <Run Text="entries" />
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+                <TextBlock Text="Newest entries appear at the bottom. Credentials and subscriber identifiers are redacted."
+                           Style="{StaticResource MutedText}" HorizontalAlignment="Right"
+                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="520" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource Card}" Padding="10" Margin="0,14,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Margin="10,2,10,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="92" />
+                        <ColumnDefinition Width="42" />
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="TIME" Style="{StaticResource LabelText}" Margin="0" />
+                    <TextBlock Grid.Column="1" Text="LEVEL" Style="{StaticResource LabelText}" Margin="0" />
+                    <TextBlock Grid.Column="2" Text="CATEGORY" Style="{StaticResource LabelText}" Margin="0" />
+                    <TextBlock Grid.Column="3" Text="MESSAGE" Style="{StaticResource LabelText}" Margin="0" />
+                </Grid>
+
+                <Border Grid.Row="0" Style="{StaticResource Divider}" VerticalAlignment="Bottom"
+                        Margin="10,0,10,0" />
+
+                <ListBox Grid.Row="1" ItemsSource="{Binding Entries}"
+                         Style="{StaticResource LogList}" Margin="0,4,0,0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="92" />
+                                    <ColumnDefinition Width="42" />
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding TimestampText}" Style="{StaticResource MonoText}"
+                                           Foreground="{StaticResource MutedBrush}" />
+                                <TextBlock Grid.Column="1" Text="{Binding LevelText}"
+                                           Style="{StaticResource MonoText}"
+                                           Foreground="{Binding Level, Converter={StaticResource LogLevelBrush}}" />
+                                <TextBlock Grid.Column="2" Text="{Binding Category}"
+                                           Style="{StaticResource MonoText}"
+                                           Foreground="{StaticResource MutedBrush}"
+                                           TextTrimming="CharacterEllipsis" Margin="0,0,8,0" />
+                                <TextBlock Grid.Column="3" Text="{Binding Message}"
+                                           Style="{StaticResource MonoText}" TextWrapping="Wrap" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <TextBlock Grid.Row="1" Text="No log entries yet."
+                           Style="{StaticResource MutedText}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Visibility="{Binding HasEntries, Converter={StaticResource InverseBoolToVisibility}}" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

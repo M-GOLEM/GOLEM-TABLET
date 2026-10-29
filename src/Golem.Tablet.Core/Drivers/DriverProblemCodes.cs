@@ -1,0 +1,67 @@
+namespace Golem.Tablet.Core.Drivers;
+
+/// <summary>Maps Windows ConfigManagerErrorCode values to user-facing text.</summary>
+public static class DriverProblemCodes
+{
+    public static (string Description, DriverSeverity Severity) Describe(uint code) => code switch
+    {
+        0 => ("Working properly", DriverSeverity.Ok),
+        1 => ("Device is not configured correctly. The driver may not be installed.", DriverSeverity.Error),
+        2 => ("Cannot load the driver for this device.", DriverSeverity.Error),
+        3 => ("Driver may be corrupted or the system is low on memory.", DriverSeverity.Error),
+        4 => ("Device is not working properly.", DriverSeverity.Error),
+        5 => ("Driver requested an unknown resource.", DriverSeverity.Error),
+        6 => ("Boot configuration conflicts with this device.", DriverSeverity.Warning),
+        7 => ("Cannot filter resources for this device.", DriverSeverity.Error),
+        8 => ("Driver loader failed to find the driver.", DriverSeverity.Error),
+        9 => ("Device is not working properly; confirm driver settings.", DriverSeverity.Error),
+        10 => ("Device cannot start.", DriverSeverity.Error),
+        11 => ("Device failed.", DriverSeverity.Error),
+        12 => ("Not enough free resources for this device.", DriverSeverity.Warning),
+        13 => ("Cannot verify device resources.", DriverSeverity.Warning),
+        14 => ("Restart the computer to finish installing this device.", DriverSeverity.Warning),
+        15 => ("Device is re-enumerating.", DriverSeverity.Warning),
+        16 => ("Cannot identify all resources used by this device.", DriverSeverity.Warning),
+        17 => ("Device is requesting an unknown resource type.", DriverSeverity.Warning),
+        18 => ("Reinstall the drivers for this device.", DriverSeverity.Error),
+        19 => ("Registry may be corrupted; run Scanregw.", DriverSeverity.Error),
+        20 => ("Failed to load the driver.", DriverSeverity.Error),
+        21 => ("System is removing this device.", DriverSeverity.Warning),
+        22 => ("Device is disabled.", DriverSeverity.Warning),
+        23 => ("Device is using a system resource that cannot be shared.", DriverSeverity.Warning),
+        24 => ("Device is not present, not working, or missing drivers.", DriverSeverity.Error),
+        25 => ("Device is re-enumerating; drivers may not be installed.", DriverSeverity.Warning),
+        26 => ("Device could not be loaded.", DriverSeverity.Error),
+        27 => ("Device has no valid log configuration.", DriverSeverity.Warning),
+        28 => ("No driver is installed for this device.", DriverSeverity.Error),
+        29 => ("Device is disabled because firmware did not provide required resources.", DriverSeverity.Error),
+        30 => ("Device is using an IRQ conflict.", DriverSeverity.Warning),
+        31 => ("Device is not working properly; Windows cannot load the drivers.", DriverSeverity.Error),
+        32 => ("Driver for this device is disabled (service start problem).", DriverSeverity.Error),
+        33 => ("Cannot determine which resources are required.", DriverSeverity.Warning),
+        34 => ("Cannot determine device settings.", DriverSeverity.Warning),
+        35 => ("BIOS does not contain required device configuration.", DriverSeverity.Warning),
+        36 => ("Device is requesting a PCI interrupt but is configured for ISA.", DriverSeverity.Warning),
+        37 => ("Driver could not initialize the device.", DriverSeverity.Error),
+        38 => ("Driver previous instance still in memory.", DriverSeverity.Warning),
+        39 => ("Driver is corrupted or missing.", DriverSeverity.Error),
+        40 => ("Driver information in the registry is invalid.", DriverSeverity.Error),
+        41 => ("Device is running a driver that Windows cannot load.", DriverSeverity.Error),
+        42 => ("Duplicate device exists.", DriverSeverity.Warning),
+        43 => ("Driver reported that the device failed.", DriverSeverity.Error),
+        44 => ("Application or service shut down the device.", DriverSeverity.Warning),
+        45 => ("Device is not connected.", DriverSeverity.Warning),
+        46 => ("Device is not available; shutting down.", DriverSeverity.Warning),
+        47 => ("Device is prepared for safe removal.", DriverSeverity.Warning),
+        48 => ("Driver was blocked from starting.", DriverSeverity.Error),
+        49 => ("Cannot load the driver because it exceeds the boot policy.", DriverSeverity.Error),
+        _ => ("Unrecognised device problem code.", DriverSeverity.Warning)
+    };
+
+    public static string Guidance => string.Join(Environment.NewLine,
+        "Driver installation is never performed automatically.",
+        "1. Use the device vendor's official driver package.",
+        "2. Install it with Windows Device Manager.",
+        "3. Reconnect the tablet and refresh this page.",
+        "Administrator rights are required to change drivers.");
+}

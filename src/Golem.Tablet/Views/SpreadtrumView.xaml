@@ -1,0 +1,89 @@
+<UserControl x:Class="Golem.Tablet.Views.SpreadtrumView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Style="{StaticResource Card}" Padding="14,12">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Detect Spreadtrum devices" Command="{Binding DetectDevicesCommand}"
+                            Style="{StaticResource AccentButton}" />
+                    <TextBlock Text="Working…" Style="{StaticResource MutedText}" Margin="12,0,0,0"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+                </StackPanel>
+                <TextBlock Text="{Binding Status}" Style="{StaticResource MutedText}"
+                           HorizontalAlignment="Right" VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis" MaxWidth="520" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="0,14,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.4*" />
+                <ColumnDefinition Width="14" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Style="{StaticResource Card}" Padding="12">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="DETECTED DEVICES"
+                               Style="{StaticResource SectionHeader}" />
+                    <TextBlock DockPanel.Dock="Top" Text="No Spreadtrum devices connected."
+                               Margin="2,0,0,8">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource MutedText}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DetectedDevices.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <ListBox ItemsSource="{Binding DetectedDevices}" Style="{StaticResource PlainList}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Style="{StaticResource MutedText}" Margin="0,2,0,0">
+                                            <Run Text="{Binding VidPid, Mode=OneWay}" /> ·
+                                            <Run Text="{Binding Serial, Mode=OneWay}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Style="{StaticResource Chip}"
+                                            VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding ModeText}" FontSize="11" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Column="2" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="SUPPORTED OPERATIONS" Style="{StaticResource SectionHeader}" />
+                    <TextBlock TextWrapping="Wrap" Style="{StaticResource MutedText}"
+                               Text="Device detection and connection-state reporting are available. SPREADTRUM download-mode diagnostics appear here when a device is present." />
+
+                    <TextBlock Text="FLASHING NOTICE" Style="{StaticResource SectionHeader}" Margin="0,18,0,6" />
+                    <TextBlock Text="{Binding FlashingNotice}" TextWrapping="Wrap"
+                               Style="{StaticResource MutedText}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

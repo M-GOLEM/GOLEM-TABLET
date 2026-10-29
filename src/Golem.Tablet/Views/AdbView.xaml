@@ -1,0 +1,201 @@
+<UserControl x:Class="Golem.Tablet.Views.AdbView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Style="{StaticResource Card}" Padding="14,12">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Refresh devices" Command="{Binding RefreshDevicesCommand}"
+                            Style="{StaticResource AccentButton}" />
+                    <Button Content="Check version" Command="{Binding CheckVersionCommand}" Margin="8,0,0,0" />
+                </StackPanel>
+                <TextBlock Text="{Binding AdbStatus}" Style="{StaticResource MutedText}"
+                           HorizontalAlignment="Right" VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis" MaxWidth="560" />
+            </Grid>
+        </Border>
+
+        <ScrollViewer x:Name="PageScroll" Grid.Row="1" Margin="0,14,0,0"
+                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                      Focusable="False">
+        <Grid MinHeight="{Binding ViewportHeight, ElementName=PageScroll,
+                                 Converter={StaticResource MaxValue}, ConverterParameter=360}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.15*" />
+                <ColumnDefinition Width="14" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" MinHeight="110" />
+                    <RowDefinition Height="14" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource Card}" Padding="10">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Text="ADB DEVICES"
+                                   Style="{StaticResource SectionHeader}" Margin="8,4,0,10" />
+                        <TextBlock DockPanel.Dock="Top" Text="No ADB devices. Check the connection and the adb server."
+                                   TextWrapping="Wrap" Margin="8,0,8,8">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource MutedText}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Devices.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <ListBox ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}"
+                                 Style="{StaticResource PlainList}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Serial}" FontFamily="Consolas"
+                                                   FontWeight="SemiBold" FontSize="12.5" />
+                                        <TextBlock Style="{StaticResource MutedText}" Margin="0,3,0,0">
+                                            <Run Text="{Binding State, Mode=OneWay}" />
+                                            <Run Text="·" Foreground="{StaticResource FaintBrush}" />
+                                            <Run Text="{Binding Model, Mode=OneWay}" />
+                                            <Run Text="·" Foreground="{StaticResource FaintBrush}" />
+                                            <Run Text="{Binding Product, Mode=OneWay}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DockPanel>
+                </Border>
+
+                <Border Grid.Row="2" Style="{StaticResource Card}" Padding="16">
+                    <StackPanel>
+                        <TextBlock Text="SHELL COMMAND" Style="{StaticResource SectionHeader}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Text="{Binding CommandText, UpdateSourceTrigger=PropertyChanged}"
+                                     FontFamily="Consolas" />
+                            <Button Grid.Column="1" Content="Run" Command="{Binding RunShellCommand}"
+                                    Style="{StaticResource AccentButton}" Margin="8,0,0,0" />
+                        </Grid>
+                        <WrapPanel Margin="0,10,0,0">
+                            <Button Content="Properties" Command="{Binding PropertiesCommand}" Margin="0,0,8,6" />
+                            <Button Content="Android ID" Command="{Binding AndroidIdCommand}" Margin="0,0,8,6" />
+                            <Button Content="Disk usage" Command="{Binding DiskUsageCommand}" Margin="0,0,8,6" />
+                            <Button Content="Reboot system" Command="{Binding RebootSystemCommand}" Margin="0,0,8,6" />
+                            <Button Content="Reboot recovery" Command="{Binding RebootRecoveryCommand}" Margin="0,0,8,6" />
+                            <Button Content="Reboot bootloader" Command="{Binding RebootBootloaderCommand}" Margin="0,0,8,6" />
+                        </WrapPanel>
+                        <TextBlock Style="{StaticResource MutedText}" Margin="0,2,0,0" TextWrapping="Wrap"
+                                   Text="Commands are logged before execution." />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" MinHeight="110" />
+                    <RowDefinition Height="14" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource Card}" Padding="16">
+                    <DockPanel>
+                        <Grid DockPanel.Dock="Top" Margin="0,0,0,10">
+                            <TextBlock Text="LAST OUTPUT" Style="{StaticResource SectionHeader}"
+                                       Margin="0" VerticalAlignment="Center" />
+                            <TextBlock Text="stdout · stderr · exit code" Style="{StaticResource MutedText}"
+                                       FontSize="10.5" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                        </Grid>
+                        <Border Style="{StaticResource Inset}" Padding="12,10" Background="#080B0F">
+                            <TextBox Text="{Binding Output, Mode=OneWay}" IsReadOnly="True"
+                                     AcceptsReturn="True" TextWrapping="NoWrap"
+                                     FontFamily="Consolas" FontSize="12"
+                                     VerticalContentAlignment="Top"
+                                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                                     Background="Transparent" BorderThickness="0" Padding="0" MinHeight="0" />
+                        </Border>
+                    </DockPanel>
+                </Border>
+
+                <Border Grid.Row="2" Style="{StaticResource Card}" Padding="16">
+                    <StackPanel>
+                        <TextBlock Text="DEVICE TOOLS" Style="{StaticResource SectionHeader}" />
+
+                        <Grid Margin="0,0,0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="PACKAGE" Style="{StaticResource LabelText}"
+                                       VerticalAlignment="Center" Margin="0,0,10,0" />
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding PackageName, UpdateSourceTrigger=PropertyChanged}"
+                                     FontFamily="Consolas"
+                                     ToolTip="Package name, for example com.example.app" />
+                            <Button Grid.Column="2" Content="List" Command="{Binding ListPackagesCommand}"
+                                    Margin="8,0,0,0" ToolTip="List installed third-party packages" />
+                            <Button Grid.Column="3" Content="Uninstall" Command="{Binding UninstallPackageCommand}"
+                                    Style="{StaticResource DangerButton}" Margin="8,0,0,0" />
+                        </Grid>
+
+                        <Grid Margin="0,0,0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="REMOTE" Style="{StaticResource LabelText}"
+                                       VerticalAlignment="Center" Margin="0,0,10,0" />
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding RemotePath, UpdateSourceTrigger=PropertyChanged}"
+                                     FontFamily="Consolas"
+                                     ToolTip="Remote directory for push (default /sdcard/) or a full file path for pull" />
+                            <Button Grid.Column="2" Content="Push" Command="{Binding PushFileCommand}"
+                                    Margin="8,0,0,0" ToolTip="Copy a local file to the device" />
+                            <Button Grid.Column="3" Content="Pull" Command="{Binding PullFileCommand}"
+                                    Margin="8,0,0,0" ToolTip="Copy a remote file from the device" />
+                        </Grid>
+
+                        <WrapPanel Margin="0,0,0,0">
+                            <Button Content="Screenshot" Command="{Binding ScreenshotCommand}" Margin="0,0,8,6" />
+                            <Button Content="Logcat" Command="{Binding LogcatCommand}" Margin="0,0,8,6"
+                                    ToolTip="Dump the last 400 logcat lines" />
+                            <Button Content="Reboot EDL" Command="{Binding RebootEdlCommand}" Margin="0,0,8,6" />
+                            <Button Content="Reboot download" Command="{Binding RebootDownloadCommand}" Margin="0,0,8,6" />
+                        </WrapPanel>
+
+                        <WrapPanel Margin="0,0,0,0">
+                            <Button Content="Install APK" Command="{Binding InstallApkCommand}" Margin="0,0,8,6"
+                                    ToolTip="Install or replace an APK chosen on this computer" />
+                            <Button Content="Extract APK" Command="{Binding ExtractApkCommand}" Margin="0,0,8,6"
+                                    ToolTip="Pull the APK of the package named above" />
+                            <Button Content="Record 20 s" Command="{Binding RecordScreenCommand}" Margin="0,0,8,6"
+                                    ToolTip="Record the device screen and save the MP4 here" />
+                            <Button Content="Device profile" Command="{Binding ProfileCommand}" Margin="0,0,8,6"
+                                    ToolTip="Model, Android version, build and bootloader" />
+                        </WrapPanel>
+
+                        <TextBlock Style="{StaticResource MutedText}" Margin="0,2,0,0" TextWrapping="Wrap"
+                                   Text="Files stay on this computer." />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

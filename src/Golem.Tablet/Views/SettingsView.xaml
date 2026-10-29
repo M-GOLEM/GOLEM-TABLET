@@ -1,0 +1,120 @@
+<UserControl x:Class="Golem.Tablet.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid MaxWidth="1120" HorizontalAlignment="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Border Style="{StaticResource Card}" Padding="14,12">
+                <Grid>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Save settings" Command="{Binding SaveCommand}"
+                                Style="{StaticResource AccentButton}" />
+                        <Button Content="Restore defaults" Command="{Binding ResetCommand}"
+                                Margin="8,0,0,0" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Margin="16,0,0,0"
+                               VerticalAlignment="Center" HorizontalAlignment="Right"
+                               Foreground="{StaticResource AccentBrush}"
+                               TextTrimming="CharacterEllipsis" MaxWidth="560"
+                               Visibility="{Binding HasMessage, Converter={StaticResource BoolToVisibility}}" />
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1" Margin="0,14,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="ANDROID DEBUG BRIDGE" Style="{StaticResource SectionHeader}" />
+                            <TextBlock Text="Path to adb.exe. Leave empty to search the system PATH."
+                                       Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,10" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding AdbPath, UpdateSourceTrigger=PropertyChanged}"
+                                         FontFamily="Consolas" VerticalAlignment="Center" />
+                                <Button Grid.Column="1" Content="Browse…" Command="{Binding BrowseAdbCommand}"
+                                        Margin="8,0,0,0" VerticalAlignment="Center" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                        <StackPanel>
+                            <TextBlock Text="DIAGNOSTICS" Style="{StaticResource SectionHeader}" />
+                            <TextBlock Text="Preferred serial port" Style="{StaticResource LabelText}" />
+                            <TextBox Text="{Binding PreferredSerialPort, UpdateSourceTrigger=PropertyChanged}"
+                                     FontFamily="Consolas" />
+                            <TextBlock Text="Example: COM7. Leave empty to use the first available port."
+                                       Style="{StaticResource MutedText}" Margin="0,5,0,0" />
+
+                            <TextBlock Text="Command timeout (seconds)" Style="{StaticResource LabelText}"
+                                       Margin="0,14,0,3" />
+                            <TextBox Text="{Binding TimeoutText, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Style="{StaticResource MutedText}" Margin="0,5,0,0">
+                                <Run Text="Allowed range:" />
+                                <Run Text="{Binding TimeoutRange, Mode=OneWay}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="LOG EXPORT" Style="{StaticResource SectionHeader}" />
+                            <TextBlock Text="Default folder offered when exporting the session log."
+                                       Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,10" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding LogExportDirectory, UpdateSourceTrigger=PropertyChanged}"
+                                         VerticalAlignment="Center" />
+                                <Button Grid.Column="1" Content="Browse…"
+                                        Command="{Binding BrowseLogDirectoryCommand}"
+                                        Margin="8,0,0,0" VerticalAlignment="Center" />
+                            </Grid>
+                            <Border Style="{StaticResource Divider}" Margin="0,16,0,14" />
+                            <CheckBox Content="Ask for confirmation before reboot or other destructive actions"
+                                      IsChecked="{Binding ConfirmDestructiveActions}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                        <StackPanel>
+                            <TextBlock Text="STORAGE" Style="{StaticResource SectionHeader}" />
+                            <TextBlock Text="Settings file" Style="{StaticResource LabelText}" />
+                            <Border Style="{StaticResource Inset}" Padding="10,8">
+                                <TextBlock Text="{Binding SettingsFilePath}" FontFamily="Consolas"
+                                           FontSize="11" Foreground="{StaticResource MutedBrush}"
+                                           TextWrapping="Wrap" />
+                            </Border>
+                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                <Ellipse Width="6" Height="6" Fill="{StaticResource SuccessBrush}"
+                                         VerticalAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="Stored locally only" FontSize="11"
+                                           Foreground="{StaticResource MutedBrush}" />
+                            </StackPanel>
+                            <TextBlock Text="No update service, no telemetry and no background network connections."
+                                       TextWrapping="Wrap" Style="{StaticResource MutedText}"
+                                       Foreground="{StaticResource FaintBrush}" Margin="0,8,0,0" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>
